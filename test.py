@@ -15,7 +15,7 @@ def q_tot(t):
     return q_max*sp.exp(-(tau/t)**2)
 def cooling(T, mobile):
     return -1.98e7 * (3.35e-3 * (T-373) + 1.2e-1 * (1 - f.exp(-6.9e-2*(T-373))))
-def flux_elm(t):
+def flux(t):
     q = 1.6e-19 #C
     q_max = 10e6
     E = 115
@@ -54,20 +54,14 @@ trap = F.Trap(
 
 my_model.traps = [trap]
 
-stat_source = F.ImplantationFlux(
-    flux=10e6/(115+13.6)/1.6e-19,  # H/m2/s
-    imp_depth=25e-10,  # m
-    width=15e-10,  # m
-    volume=1
-)
-elm_source = F.ImplantationFlux(
-    flux=flux_elm(F.t),  # H/m2/s
+impl_source = F.ImplantationFlux(
+    flux=flux(F.t),  # H/m2/s
     imp_depth=200e-10,  # m
     width=15e-10,  # m
     volume=1
 )
 
-my_model.sources = [elm_source]
+my_model.sources = [impl_source]
 
 my_model.boundary_conditions = [
     F.FluxBC(value=q_tot(F.t), field="T", surfaces=1),
